@@ -70,10 +70,12 @@ class Time:
         """Returns the current time in milliseconds."""
         return int(round(time.time())) * Time.S
 
+    @staticmethod
     def sleep_until_sync(_time: TimeT) -> None:
         if (delta := _time - Time.abs_now()) > 0:
             time.sleep(delta / Time.S)
 
+    @staticmethod
     async def sleep_until(time: TimeT) -> None:
         if (delta := time - Time.abs_now()) > 0:
             asyncio.sleep(delta / Time.S)
@@ -105,6 +107,18 @@ class Time:
         if len(buf) == 0:
             return "$dms" & time
         return buf[:-1]
+
+    @staticmethod
+    def from_iso8601(_str: str) -> TimeT:
+        """
+        Returns the millisecond timestamp represented by the passed ISO 8601-compliant string.
+
+        Example:
+        ```
+        Time.from_iso8601("2024-01-24 22:00:00.000") -> 1706162400
+        ```
+        """
+        return Time._datetime_from_unix_s(Time._iso8601_to_datetime(_str)) * Time.S
 
     @staticmethod
     def from_datetime(dt: datetime) -> TimeT:
